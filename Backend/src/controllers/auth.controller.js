@@ -337,10 +337,10 @@ const changeUserDetail = AsyncHandler(async(req, res) =>{
         throw new ApiError(401, "Please give me detail which have update.")
     }
 
-    const image = ""
+    let image = ""
 
     if(file) {
-        image = uploadToCloudinary(file)
+        image = await uploadToCloudinary(file)
     }
     
     const updatedUser = await db.user.update({

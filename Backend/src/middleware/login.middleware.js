@@ -26,4 +26,23 @@ const checkLogin = AsyncHandler(async (req, res, next) => {
     next()
 })
 
-export {checkLogin}
+const checkAdmin = async (req, res, next) => {
+    try {
+        const userId = req.user.id
+        const user = await db.user.findUnique({
+            where:{id:userId},
+            select:{
+                role:true
+            }
+        })
+
+        if(!user || user.role !== "ADMIN") {
+            throw new ApiError(403, "Access denied, Admins only")
+        }
+
+    } catch (error) {
+        console.log(error);    
+    }
+}
+
+export {checkLogin, checkAdmin}

@@ -1,22 +1,22 @@
 import express from 'express'
 import { checkAdmin, checkLogin } from '../middleware/login.middleware.js';
-import { createProblem } from '../controllers/problem.controller.js';
+import { createProblem, deleteProblem, getAllProblems, getProblemByID, updateProblem } from '../controllers/problem.controller.js';
 
 const app = express.Router();
 
 // check if user is logged or not
 app.use(checkLogin)
 
-app.post("/create-problem", createProblem)
-// app.get("/get-problem/:id",)
+app.get("/get-all-problem", getAllProblems)
+app.get("/get-problem/:id", getProblemByID)
 // app.get("/get-solved-problem")
 
 // // check user is admin or not 
-// app.use(checkAdmin)
+app.use(checkAdmin)
 
-// app.post("create-problem",)
-// app.put("/update-problem/:id")
-// app.delete("/delete-problem/:id",)
+app.post("/create-problem", createProblem)
+app.put("/update-problem/:id", updateProblem)
+app.delete("/delete-problem/:id", deleteProblem)
 
 
 export default app;

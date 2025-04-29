@@ -7,7 +7,7 @@ const app = express.Router();
 // check if user is logged or not
 app.use(checkLogin)
 
-app.get("/get-all-problem", createProblem)
+app.post("/create-problem", createProblem)
 // app.get("/get-problem/:id",)
 // app.get("/get-solved-problem")
 

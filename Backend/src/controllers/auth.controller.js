@@ -330,10 +330,10 @@ const changePassword = AsyncHandler(async(req, res) => {
 })
 
 const changeUserDetail = AsyncHandler(async(req, res) =>{
-    const {newEmail, newUsername, newName} = req.body;
+    const {newEmail, newUsername, newName, role} = req.body;
     const file = req.file
 
-    if(!(newEmail || newUsername || newName || file) ) {
+    if(!(newEmail || newUsername || newName || file || role) ) {
         throw new ApiError(401, "Please give me detail which have update.")
     }
 
@@ -349,7 +349,8 @@ const changeUserDetail = AsyncHandler(async(req, res) =>{
             ...(newEmail && {email: newEmail}),
             ...(newUsername && {username: newUsername}),
             ...(newName && {name: newName}),
-            ...(file && {image:image.url}) 
+            ...(file && {image:image.url}),
+            ...(role && {role})
         }
     })
 

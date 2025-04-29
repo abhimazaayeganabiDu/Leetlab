@@ -1,6 +1,6 @@
 import { AsyncHandler } from "../utils/api-async-handler.js";
 import { db } from "../libs/db.js";
-import { getJudge0LanguageId, submitBatch } from "../libs/judge0.lib.js";
+import { getJudge0LanguageId, pollBatchResult, submitBatch } from "../libs/judge0.lib.js";
 import { ApiError } from "../utils/api-error-handle.js";
 import { ApiReponse } from "../utils/api-response.js";
 
@@ -31,14 +31,19 @@ const createProblem = AsyncHandler(async (req, res) => {
       expected_output: output,
     }));
 
+    console.log("submissions from line 34", submissions);
+
     const submissionResult = await submitBatch(submissions);
 
     const tokens = submissionResult.map((res) => res.token);
-
+    
     const result = await pollBatchResult(tokens);
+    
+    for (let i = 0; i < result.length; i++) {
+      console.log("Result________", result[i]);
 
-    for (let i = 0; i < result.lenght; i++) {
-      if (result[i] != 3) {
+      if (result[i].status.id != 3) {
+
         throw new ApiError(
           400,
           `Testcase ${i + 1} failed for language ${language} `

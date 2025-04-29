@@ -2,10 +2,10 @@ import axios from 'axios'
 
 export const getJudge0LanguageId = (language) =>{
     const languageMap = {
-        "C++":54, //  (GCC 9.2.0)
-        "JAVA":62,
+        "JAVASCRIPT":63, 
         "PYTHON":71,
-        "JAVASCRIPT":63 
+        "JAVA":62,
+        "CPP":54, //  (GCC 9.2.0)
     }
 
     return languageMap[language.toUpperCase()];
@@ -35,13 +35,14 @@ export const pollBatchResult = async (token) => {
                 base64_encoded:false
             }
         })
+        
+        const result = data.data.submissions
 
-        const result = data.submissions
 
         isAllDone = result.every((result) => result.status.id >= 3)
 
         await sleep(1000); 
     }
 
-    return data.submissions;
+    return data.data.submissions;
 }

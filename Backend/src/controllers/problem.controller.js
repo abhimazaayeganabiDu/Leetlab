@@ -17,6 +17,14 @@ const createProblem = AsyncHandler(async (req, res) => {
     referenceSolution,
   } = req.body;
 
+  const isAlreadyProblem = await db.problem.findUnique({
+    where:{title}
+  })
+
+  if(isAlreadyProblem) {
+    throw new ApiError(404, "Problem already exists with title.")
+  }
+
   for (const [language, solutionCode] of Object.entries(referenceSolution)) {
     const languageId = getJudge0LanguageId(language);
 
@@ -32,11 +40,9 @@ const createProblem = AsyncHandler(async (req, res) => {
     }));
 
     const submissionResult = await submitBatch(submissions);
-
     const tokens = submissionResult.map((res) => res.token);
-    
     const result = await pollBatchResult(tokens);
-    
+
     for (let i = 0; i < result.length; i++) {
       console.log("Result________", result[i]);
 

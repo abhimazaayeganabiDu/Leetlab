@@ -13,7 +13,7 @@ const createProblem = AsyncHandler(async (req, res) => {
     example,
     constraints,
     testcases,
-    codeSnippet,
+    codeSnippets,
     referenceSolution,
   } = req.body;
 
@@ -30,8 +30,6 @@ const createProblem = AsyncHandler(async (req, res) => {
       stdin: input,
       expected_output: output,
     }));
-
-    console.log("submissions from line 34", submissions);
 
     const submissionResult = await submitBatch(submissions);
 
@@ -61,12 +59,12 @@ const createProblem = AsyncHandler(async (req, res) => {
         example,
         constraints,
         testcases,
-        codeSnippet,
+        codeSnippets,
         referenceSolution,
       },
     });
 
-    res
+    return res
       .status(201)
       .json(
         new ApiReponse(

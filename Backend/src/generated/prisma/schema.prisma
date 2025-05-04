@@ -79,7 +79,7 @@ model Submission {
   id            String  @id @default(uuid())
   userId        String
   problemId     String
-  sourceCode    Json
+  source_code   Json
   language      String
   stdin         String?
   stdout        String?
@@ -101,7 +101,7 @@ model Submission {
 model TestCaseResult {
   id            String  @id @default(uuid())
   submissionId  String
-  tastCase      Int
+  testCase      Int
   passed        Boolean
   stdout        String?
   expected      String

@@ -19,10 +19,12 @@ cloudinary.config({
 // routes import here
 import authRoutes from "./routes/auth.route.js";
 import problemRoutes from "./routes/problem.route.js";
+import executeCodeRoutes from "./routes/executeCode.route.js";
 
 // routes add here
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/problem", problemRoutes);
+app.use("/api/v1/executeCode", executeCodeRoutes);
 
 export default app;

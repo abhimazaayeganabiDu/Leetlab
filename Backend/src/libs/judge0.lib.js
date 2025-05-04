@@ -11,6 +11,17 @@ export const getJudge0LanguageId = (language) =>{
     return languageMap[language.toUpperCase()];
 }
 
+export const getLanguageName = (language_id) => {
+    const languageMap = {
+        63: "JAVASCRIPT",
+        71: "PYTHON",
+        62: "JAVA",
+        54: "CPP", //  (GCC 9.2.0)
+    }
+
+    return languageMap[language_id];
+}
+
 
 export const submitBatch = async (submissions) => {
     const url = process.env.JUDGE0_API_URL;

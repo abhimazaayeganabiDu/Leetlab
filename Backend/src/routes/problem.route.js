@@ -1,6 +1,6 @@
 import express from 'express'
 import { checkAdmin, checkLogin } from '../middleware/login.middleware.js';
-import { createProblem, deleteProblem, getAllProblems, getProblemByID, updateProblem } from '../controllers/problem.controller.js';
+import { createProblem, deleteProblem, getAllProblems, getAllProblemSolvedByUser, getProblemByID, updateProblem } from '../controllers/problem.controller.js';
 
 const app = express.Router();
 
@@ -9,7 +9,7 @@ app.use(checkLogin)
 
 app.get("/get-all-problem", getAllProblems)
 app.get("/get-problem/:id", getProblemByID)
-// app.get("/get-solved-problem")
+app.get("/get-solved-problem", getAllProblemSolvedByUser)
 
 // // check user is admin or not 
 app.use(checkAdmin)

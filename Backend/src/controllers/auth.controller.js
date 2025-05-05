@@ -75,7 +75,7 @@ const register = AsyncHandler(async (req, res) => {
 
     const avatar = await uploadToCloudinary(file)
 
-    const newUser = await db.user.create({
+    const user = await db.user.create({
         data:{
             email,
             password:hashedPassword,
@@ -87,6 +87,27 @@ const register = AsyncHandler(async (req, res) => {
             emailVarificationTokenExpiry
         }
     })
+
+    const newUser  = await db.user.findUnique({
+        where:{
+            id:user.id
+        },
+        select:{
+            id:true,
+            email:true,
+            name:true,
+            username:true,
+            image:true,
+            role:true,
+            isVarified:true,
+            createdAt:true,
+            updatedAt:true
+        }
+    })    
+
+    if(!newUser) {
+        throw new ApiError(404, "Some internal error, User not created.")
+    }
 
     const varificationUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/verify-email/${unHashedToken}`
     const mailgenContent = emailVerificationMailgenContent(username, varificationUrl);
@@ -211,6 +232,17 @@ const login = AsyncHandler(async (req, res) => {
         data:{
             refreshToken,
             refreshTokenExpiry
+        },
+        select:{
+            id:true,
+            email:true,
+            name:true,
+            username:true,
+            image:true,
+            role:true,
+            isVarified:true,
+            createdAt:true,
+            updatedAt:true
         }
     })
 
@@ -265,7 +297,13 @@ const forgotPasswordRequest = AsyncHandler(async(req, res) => {
     })
 
 
-    res.status(200).json(new ApiReponse(200, updatedUser, "Forgot password email send sucessfully."))
+    res.status(200).json(new ApiReponse(200, {data:{
+        name:updatedUser.name,
+        email:updatedUser.email,
+        username:updatedUser.username,
+        forgotPasswordToken:updatedUser.forgotPasswordToken,
+        forgotPasswordTokenExpiry:updatedUser.forgotPasswordTokenExpiry
+    }}, "Forgot password email send sucessfully."))
 
 })
 
@@ -293,7 +331,7 @@ const resetPassword = AsyncHandler(async(req, res) => {
     
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    const updatedUser = await db.user.update({
+    await db.user.update({
         where:{
             id:user.id
         },
@@ -302,9 +340,28 @@ const resetPassword = AsyncHandler(async(req, res) => {
         }
     })
 
+    const updatedUser = await db.user.findFirst({
+        where:{
+            password:hashedPassword
+        },
+        select:{
+            id:true,
+            email:true,
+            name:true,
+            username:true,
+            image:true,
+            role:true,
+            isVarified:true,
+            createdAt:true,
+            updatedAt:true
+        }       
+    })
+
+    if(!updatedUser) {
+        throw new ApiError(400, "Some internal error, password not forgot.")
+    }
+
     res.status(200).json(new ApiReponse(200, updatedUser, "Password reset sucessfully."))
-
-
 })
 
 const changePassword = AsyncHandler(async(req, res) => {
@@ -316,7 +373,7 @@ const changePassword = AsyncHandler(async(req, res) => {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    const updatedUser = await db.user.update({
+    await db.user.update({
         where:{
             id:req.user.id
         },
@@ -324,6 +381,29 @@ const changePassword = AsyncHandler(async(req, res) => {
             password:hashedPassword
         }
     })
+
+    const updatedUser = await db.user.findFirst({
+        where:{
+            password:hashedPassword
+        },
+        select:{
+            id:true,
+            email:true,
+            name:true,
+            username:true,
+            image:true,
+            role:true,
+            isVarified:true,
+            createdAt:true,
+            updatedAt:true
+        }       
+    })
+
+
+    if(!updatedUser) {
+        throw new ApiError(400, "Some internal error, password not updated.")
+    }
+
 
     res.status(200).json(new ApiReponse(200, updatedUser, "Password changed sucessfully."))
 

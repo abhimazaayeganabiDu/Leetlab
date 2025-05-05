@@ -210,7 +210,66 @@ const deleteProblem = AsyncHandler(async (req, res) => {
 })
 
 const getAllProblemSolvedByUser = AsyncHandler(async (req, res) => {
+  const userId = req.user.id
+
+  const problems = await db.problemSolved.findMany({
+    where: { userId },
+    select: {
+      id: true,
+      problemId: true,
+      userId: true,
+      problem: {
+        select: {
+          title: true,
+          description: true,
+          difficulty: true,
+          tags: true,
+        }
+      },
+      createdAt: true,
+      updatedAt: true
+    }
+  })
+
+  if (!problems || problems.length === 0) {
+    throw new ApiError(404, "No problem solved by user.")
+  };
+
+  return res.status(200).json(new ApiReponse(200, problems, "All problem solved by user fetched sucessfully."))
 
 })
+
+
+// Method - 2       to get all problems solved by user
+
+// const getAllProblemSolvedByUser = async (req, res) => {
+//   try {
+//     const problems = await db.problem.findMany({
+//       where:{
+//         problemSolved:{
+//           some:{
+//             userId:req.user.id
+//           }
+//         }
+//       },
+//       include:{
+//         problemSolved:{
+//           where:{
+//             userId:req.user.id
+//           }
+//         }
+//       }
+//     })
+
+//     res.status(200).json({
+//       success:true,
+//       message:"Problems fetched successfully",
+//       problems
+//     })
+//   } catch (error) {
+//     console.error("Error fetching problems :" , error);
+//     res.status(500).json({error:"Failed to fetch problems"})
+//   }
+// };
 
 export { createProblem, getAllProblems, getProblemByID, updateProblem, deleteProblem, getAllProblemSolvedByUser };

@@ -15,6 +15,17 @@ const checkLogin = AsyncHandler(async (req, res, next) => {
     const user = await db.user.findUnique({
         where:{
             id:data.id
+        },
+        select:{
+            id:true,
+            username:true,
+            name:true,
+            email:true,
+            image:true,
+            role:true,
+            isVarified:true,
+            createdAt:true,
+            updatedAt:true,
         }
     })
 

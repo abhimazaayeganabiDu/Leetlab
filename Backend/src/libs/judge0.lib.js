@@ -54,6 +54,6 @@ export const pollBatchResult = async (token) => {
 
         await sleep(1000); 
     }
-
+    
     return data.data.submissions;
 }

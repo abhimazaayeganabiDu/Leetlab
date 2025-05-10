@@ -1,10 +1,26 @@
+import express from "express";
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+import path from 'path'
 import { v2 as cloudinary } from "cloudinary";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
-import express from "express";
+import dotenv, { config } from "dotenv";
+import helmet from 'helmet'
+import cors from 'cors'
+import responseMessage from './constant/responseMessage.js'
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
+app.use(helmet())
+app.use(
+  cors({
+    methods:['GET', "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
+    origin: [config.CLIENT_URL],
+    credentials: true
+  })
+)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -26,5 +42,17 @@ import executeCodeRoutes from "./routes/executeCode.route.js";
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/problem", problemRoutes);
 app.use("/api/v1/executeCode", executeCodeRoutes);
+
+// 404 Handler
+app.use((req, _, next) => {
+  try {
+    throw new Erorr (responseMessage.NOT_FOUND('route'))
+  } catch (error) {
+    // httpError(next, error, req, 404)
+    // next()
+    console.log("err not found", error);
+    
+  }
+})
 
 export default app;

@@ -1,5 +1,6 @@
 import express from "express"
 import { checkLogin } from "../middleware/login.middleware.js"
+import { addProblemToPlaylist, createPlaylist, deletePlaylist, getAllListDetails, getPlayListDetails, removeProblemFromPlaylist } from "../controllers/playlist.controller.js";
 
 
 const app = express.Router()

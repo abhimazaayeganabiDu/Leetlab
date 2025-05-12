@@ -1,6 +1,6 @@
 import express from 'express';
 import { getAllSubmission, getAllSubmissionByProblemId, getSubmissionById, getSubmissionCountById } from '../controllers/submission.controller.js';
-import { checkLogin } from '../middleware/login.middleware'; // Middleware to check if user is logged in
+import { checkLogin } from '../middleware/login.middleware.js'; // Middleware to check if user is logged in
 
 const app = express.Router();   
 

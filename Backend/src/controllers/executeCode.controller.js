@@ -2,7 +2,7 @@ import { db } from "../libs/db.js";
 import { getLanguageName, pollBatchResult, submitBatch } from "../libs/judge0.lib.js";
 import { AsyncHandler } from "../utils/api-async-handler.js";
 import { ApiError } from "../utils/api-error-handle.js";
-import { ApiReponse } from "../utils/api-response.js";
+import { ApiResponse } from "../utils/api-response.js";
 
 const executeCode = AsyncHandler(async (req, res) => {
     const { source_code, language_id, stdin, expected_outputs, problemId } = req.body;
@@ -118,7 +118,7 @@ const executeCode = AsyncHandler(async (req, res) => {
         }
     })
 
-    return res.status(200).json(new ApiReponse(200, submissionWithTestCase, "Code executed successfully"))
+    return res.status(200).json(new ApiResponse(200, submissionWithTestCase, "Code executed successfully"))
 }
 )
 
@@ -143,7 +143,7 @@ const runCode = AsyncHandler(async (req, res) => {
     console.log("result", result);
 
 
-    return res.status(200).json(new ApiReponse(200, result, "Code executed successfully."))
+    return res.status(200).json(new ApiResponse(200, result, "Code executed successfully."))
 })
 
 

@@ -36,12 +36,16 @@ cloudinary.config({
 import authRoutes from "./routes/auth.route.js";
 import problemRoutes from "./routes/problem.route.js";
 import executeCodeRoutes from "./routes/executeCode.route.js";
+import subissionRoutes from "./routes/submission.route.js"
+import playlistRoutes from "./routes/playlist.route.js"
 
 // routes add here
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/problem", problemRoutes);
 app.use("/api/v1/executeCode", executeCodeRoutes);
+app.use("/api/v1/submission", subissionRoutes);
+app.use("/api/v1/playlist", playlistRoutes);
 
 // 404 Handler
 app.use((req, _, next) => {

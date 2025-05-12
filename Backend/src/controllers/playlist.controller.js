@@ -1,9 +1,7 @@
-import { db } from "../libs/db";
-import { AsyncHandler } from "../utils/api-async-handler";
-import { ApiError } from "../utils/api-error-handle";
+import { db } from "../libs/db.js";
+import { AsyncHandler } from "../utils/api-async-handler.js";
+import { ApiError } from "../utils/api-error-handle.js";
 import { ApiResponse } from "../utils/api-response.js"
-
-
 
 
 const getAllListDetails = AsyncHandler(async (req, res) => {

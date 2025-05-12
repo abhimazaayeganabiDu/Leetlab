@@ -5,7 +5,7 @@ import { userRole } from "../generated/prisma/index.js"
 import { db } from "../libs/db.js"
 import { AsyncHandler } from "../utils/api-async-handler.js"
 import { ApiError } from "../utils/api-error-handle.js"
-import { ApiReponse } from "../utils/api-response.js"
+import { ApiResponse } from "../utils/api-response.js"
 import { uploadToCloudinary } from "../utils/api-upload-handler.js"
 import { emailVerificationMailgenContent, forgotPasswordMailgenContent, sendEmail } from "../utils/send-mail.js"
 
@@ -118,7 +118,7 @@ const register = AsyncHandler(async (req, res) => {
         subject:"For User Varification"
     })
 
-    return res.status(200).json(new ApiReponse(200, newUser, "User created sucessfully."))
+    return res.status(200).json(new ApiResponse(200, newUser, "User created sucessfully."))
 
 })
 
@@ -149,7 +149,7 @@ const verifyEmail = AsyncHandler(async (req, res) => {
         }
     })
 
-    res.status(200).json(new ApiReponse(200, updatedUser, "Email verified "))
+    res.status(200).json(new ApiResponse(200, updatedUser, "Email verified "))
 })
 
 const resendVarificationUrl = AsyncHandler(async(req, res) => {
@@ -194,7 +194,7 @@ const resendVarificationUrl = AsyncHandler(async(req, res) => {
         subject:"For User Varification"
     })
 
-    res.status(200).json(new ApiReponse(200, updatedUser, "Resend mail send sucessfully."))
+    res.status(200).json(new ApiResponse(200, updatedUser, "Resend mail send sucessfully."))
 
 })
 
@@ -253,7 +253,7 @@ const login = AsyncHandler(async (req, res) => {
         maxAge: 7*24*60*60*1000  // 7 Days
     })
 
-    return res.status(200).json(new ApiReponse(200, updatedUser, "User login sucessfully."))
+    return res.status(200).json(new ApiResponse(200, updatedUser, "User login sucessfully."))
 })
 
 const forgotPasswordRequest = AsyncHandler(async(req, res) => {
@@ -297,7 +297,7 @@ const forgotPasswordRequest = AsyncHandler(async(req, res) => {
     })
 
 
-    res.status(200).json(new ApiReponse(200, {data:{
+    res.status(200).json(new ApiResponse(200, {data:{
         name:updatedUser.name,
         email:updatedUser.email,
         username:updatedUser.username,
@@ -361,7 +361,7 @@ const resetPassword = AsyncHandler(async(req, res) => {
         throw new ApiError(400, "Some internal error, password not forgot.")
     }
 
-    res.status(200).json(new ApiReponse(200, updatedUser, "Password reset sucessfully."))
+    res.status(200).json(new ApiResponse(200, updatedUser, "Password reset sucessfully."))
 })
 
 const changePassword = AsyncHandler(async(req, res) => {
@@ -405,7 +405,7 @@ const changePassword = AsyncHandler(async(req, res) => {
     }
 
 
-    res.status(200).json(new ApiReponse(200, updatedUser, "Password changed sucessfully."))
+    res.status(200).json(new ApiResponse(200, updatedUser, "Password changed sucessfully."))
 
 })
 
@@ -434,7 +434,7 @@ const changeUserDetail = AsyncHandler(async(req, res) =>{
         }
     })
 
-    res.status(200).json(new ApiReponse(200, updatedUser, "User details changed sucessfully."))
+    res.status(200).json(new ApiResponse(200, updatedUser, "User details changed sucessfully."))
 
 })
 
@@ -453,11 +453,11 @@ const logout = AsyncHandler(async(req, res) => {
         }
     })
 
-    res.status(200).json(new ApiReponse(200, {}, "Logout sucessfully."))
+    res.status(200).json(new ApiResponse(200, {}, "Logout sucessfully."))
 })
 
 const getMyProfile = AsyncHandler(async (req, res) => {
-    res.status(200).json(new ApiReponse(200, req.user, "User fetched sucessfully."))
+    res.status(200).json(new ApiResponse(200, req.user, "User fetched sucessfully."))
 })
 
 export {

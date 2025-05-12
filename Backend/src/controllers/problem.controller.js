@@ -2,7 +2,7 @@ import { AsyncHandler } from "../utils/api-async-handler.js";
 import { db } from "../libs/db.js";
 import { getJudge0LanguageId, pollBatchResult, submitBatch } from "../libs/judge0.lib.js";
 import { ApiError } from "../utils/api-error-handle.js";
-import { ApiReponse } from "../utils/api-response.js";
+import { ApiResponse } from "../utils/api-response.js";
 
 const createProblem = AsyncHandler(async (req, res) => {
   const {
@@ -71,7 +71,7 @@ const createProblem = AsyncHandler(async (req, res) => {
     return res
       .status(201)
       .json(
-        new ApiReponse(
+        new ApiResponse(
           201,
           newProblem,
           "New problem created and tested sucessfully."
@@ -98,7 +98,7 @@ const getAllProblems = AsyncHandler(async (req, res) => {
     throw new ApiError(404, "No problem found.")
   }
 
-  return res.status(200).json(new ApiReponse(200, allProblems, "All problem fetched sucessfully."))
+  return res.status(200).json(new ApiResponse(200, allProblems, "All problem fetched sucessfully."))
 })
 
 const getProblemByID = AsyncHandler(async (req, res) => {
@@ -112,7 +112,7 @@ const getProblemByID = AsyncHandler(async (req, res) => {
     throw new ApiError(404, "No problem found.")
   }
 
-  return res.status(200).json(new ApiReponse(200, problem, "Problem fetched sucessfully."))
+  return res.status(200).json(new ApiResponse(200, problem, "Problem fetched sucessfully."))
 })
 
 const updateProblem = AsyncHandler(async (req, res) => {
@@ -192,7 +192,7 @@ const updateProblem = AsyncHandler(async (req, res) => {
     }
   })
 
-  return res.status(200).json(new ApiReponse(200, updatedProblem, "Problem updated sucessfully."))
+  return res.status(200).json(new ApiResponse(200, updatedProblem, "Problem updated sucessfully."))
 })
 
 const deleteProblem = AsyncHandler(async (req, res) => {
@@ -206,7 +206,7 @@ const deleteProblem = AsyncHandler(async (req, res) => {
 
   const deletedProblem = await db.problem.delete({ where: { id } })
 
-  return res.status(200).json(new ApiReponse(200, deletedProblem, "Problem deleted sucessfully."))
+  return res.status(200).json(new ApiResponse(200, deletedProblem, "Problem deleted sucessfully."))
 })
 
 const getAllProblemSolvedByUser = AsyncHandler(async (req, res) => {
@@ -235,7 +235,7 @@ const getAllProblemSolvedByUser = AsyncHandler(async (req, res) => {
     throw new ApiError(404, "No problem solved by user.")
   };
 
-  return res.status(200).json(new ApiReponse(200, problems, "All problem solved by user fetched sucessfully."))
+  return res.status(200).json(new ApiResponse(200, problems, "All problem solved by user fetched sucessfully."))
 
 })
 

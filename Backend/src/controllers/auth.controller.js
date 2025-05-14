@@ -228,6 +228,10 @@ const login = AsyncHandler(async (req, res) => {
         throw new ApiError(401, "User not found with this email.")
     }
 
+    if(!user.isVarified) {
+        throw new ApiError(401, "Please verify account then login Again.")
+    }
+
     const isMatched = await bcrypt.compare(password, user.password)
 
     if (!isMatched) {

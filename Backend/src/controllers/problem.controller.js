@@ -22,7 +22,7 @@ const createProblem = AsyncHandler(async (req, res) => {
   })
 
   if (isAlreadyProblem) {
-    throw new ApiError(404, "Problem already exists with title.")
+    throw new ApiError(409, "Problem already exists with title.")
   }
 
   for (const [language, solutionCode] of Object.entries(referenceSolution)) {
@@ -131,15 +131,16 @@ const updateProblem = AsyncHandler(async (req, res) => {
   const id = req.params.id;
 
   if (!(id || title)) {
-    throw new ApiError(404, "Id or title requered.")
+    throw new ApiError(404, "Id or title not found.")
   }
 
-  const problem = await db.problem.findFirst({
+  const problem = await db.problem.findUnique({
     where: {
-      OR: [
-        { id },
-        { title }
-      ]
+      id
+    },
+    select: {
+      title: true,
+      userId: true
     }
   })
 
@@ -147,11 +148,16 @@ const updateProblem = AsyncHandler(async (req, res) => {
     throw new ApiError(404, "Problem not found.")
   }
 
+  if (req.user.id !== problem.userId) {
+    throw new ApiError(401, "Unauthorized, You Cannot create this Problem.")
+  }
+
+
   for (const [language, solutionCode] of Object.entries(referenceSolution)) {
     const languageId = getJudge0LanguageId(language)
 
     if (!languageId) {
-      throw new ApiError(400, `Language ${language} is not supported.`);
+      throw new ApiError(409, `Language ${language} is not supported.`);
     }
 
     const submissions = testcases.map(({ input, output }) => ({
@@ -177,7 +183,7 @@ const updateProblem = AsyncHandler(async (req, res) => {
   }
 
   const updatedProblem = await db.problem.update({
-    where: { id: problem.id },
+    where: { id },
     data: {
       userId: req.user.id,
       title,

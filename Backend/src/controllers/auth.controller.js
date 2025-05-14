@@ -509,16 +509,54 @@ const logout = AsyncHandler(async (req, res) => {
 })
 
 const getMyProfile = AsyncHandler(async (req, res) => {
-    const problemSolved = await db.user.findUnique({
-        where: { id: req.user.id },
-        select: {
-            _count: {
-                select: { problemSolved: true },
-            },
-            
+
+    const totalProblems = await db.problem.groupBy({
+        by: ['difficulty'],
+        _count: {
+            _all: true
         }
     })
-    res.status(200).json(new ApiResponse(200, {...req.user, problemSolved:problemSolved._count.problemSolved}, "User fetched sucessfully."))
+
+    const totalProblem = {
+        "easy": 0,
+        "medium": 0,
+        "hard": 0
+    }
+
+    totalProblems.map(({ difficulty, _count }) => {
+        switch (difficulty.toUpperCase()) {
+            case "EASY":
+                totalProblem.easy = _count._all
+                break;
+            case "MEDIUM":
+                totalProblem.medium = _count._all
+                break;
+            case "HARD":
+                totalProblem.hard = _count._all
+                break;
+        }
+    })
+
+    const allSolvedProblem = await db.user.findUnique({
+        where: { id: req.user.id },
+        select: {
+            problemSolved: {
+                select: {
+                    difficulty: true
+                }
+            }
+        }
+    })
+
+    const solvedProblem = await allSolvedProblem.problemSolved.reduce((acc, { difficulty }) => {
+        const key = difficulty.toLowerCase()
+        if (key === 'easy' || key === 'medium' || key === 'hard') {
+            acc[key] += 1;
+        }
+        return acc;
+    }, { easy: 0, medium: 0, hard: 0 })
+
+    res.status(200).json(new ApiResponse(200, { ...req.user, totalProblem, solvedProblem }, "User fetched sucessfully."))
 })
 
 export {

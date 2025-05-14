@@ -17,6 +17,21 @@ const executeCode = AsyncHandler(async (req, res) => {
         throw new ApiError(400, `Language ${language} is not supported.`);
     }
 
+    const problem = await db.problem.findUnique({
+        where: { id: problemId },
+        select: {
+            id: true,
+            difficulty: true,
+            title: true
+        }
+    })
+
+
+    if(!problem) {
+        throw new ApiError(404, "Problem not found.")
+    }
+
+
     const submissions = stdin.map((input) => ({
         source_code,
         language_id,
@@ -31,13 +46,11 @@ const executeCode = AsyncHandler(async (req, res) => {
     let allPassed = true;
 
     const detailedResults = result.map((res, i) => {
-        // console.log("result", res);
-
         const stdout = res.stdout?.trim()
         const expected_output = expected_outputs[i]?.trim()
         const passed = stdout === expected_output
 
-        console.log(`Testcase ${i + 1}: ${passed ? "Passed" : "Failed"} input: ${stdin[i]} expected_output: ${expected_output} stdout: ${stdout}`);
+        // console.log(`Testcase ${i + 1}: ${passed ? "Passed" : "Failed"} input: ${stdin[i]} expected_output: ${expected_output} stdout: ${stdout}`);
 
         if (!passed) {
             allPassed = false;
@@ -85,7 +98,8 @@ const executeCode = AsyncHandler(async (req, res) => {
             update: {},
             create: {
                 userId,
-                problemId
+                problemId,
+                difficulty: problem?.difficulty
             }
         })
     }

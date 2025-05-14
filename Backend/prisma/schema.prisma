@@ -158,20 +158,18 @@ model Playlist {
   user User @relation(fields:[userId], references:[id], onDelete:Cascade)
 
   @@unique([name, userId])
-  
-
 }
 
 model ProblemInPlaylist {
   id String @id @default(uuid())
-  playListId String
+  playlistId String
   problemId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  playlist Playlist @relation (fields:[playListId], references:[id], onDelete:Cascade)
+  playlist Playlist @relation (fields:[playlistId], references:[id], onDelete:Cascade)
   problem Problem @relation (fields:[problemId], references:[id], onDelete:Cascade)
 
-  @@unique([playListId, problemId])
+  @@unique([playlistId, problemId])
 }

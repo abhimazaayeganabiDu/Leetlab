@@ -1,22 +1,15 @@
 import { db } from "../libs/db.js";
 import { AsyncHandler } from "../utils/api-async-handler.js";
 import { ApiError } from "../utils/api-error-handle.js";
-import { ApiResponse } from "../utils/api-response.js"
+import { ApiResponse } from "../utils/api-response.js";
 
 
-const getAllListDetails = AsyncHandler(async (req, res) => {
+const getAllPlaylistDetails = AsyncHandler(async (req, res) => {
     const { userId } = req.user.id
 
     const playlists = await db.playlist.findMany({
         where: {
             userId
-        },
-        include: {
-            problems: {
-                include: {
-                    problem: true
-                }
-            }
         }
     })
 
@@ -24,8 +17,8 @@ const getAllListDetails = AsyncHandler(async (req, res) => {
 })
 
 const getPlayListDetails = AsyncHandler(async (req, res) => {
-    const {playlistId} = req.params
-    if(!playlistId) {
+    const { playlistId } = req.params
+    if (!playlistId) {
         throw new ApiError(400, "Please provide playlist id.")
     }
 
@@ -34,33 +27,59 @@ const getPlayListDetails = AsyncHandler(async (req, res) => {
             id: playlistId,
             userId: req.user.id
         },
-        include:{
+        include: {
             problems: {
-                include: {
-                    problem: true
+                select: {
+                    problem:{
+                        select:{
+                            id: true,
+                            title: true,
+                            description: true,
+                            difficulty: true,
+                            tags:true,
+                            createdAt:true,
+                            updatedAt:true
+                        }
+                    }
                 }
             }
         }
     })
 
-    if(!playlist) {
+    if (!playlist) {
         throw new ApiError(400, "Playlist not found.")
     }
 
-    return res.status(200).json(new ApiResponse(200, playlist, "Playlist fetched successfully."))   
+    return res.status(200).json(new ApiResponse(200, playlist, "Playlist fetched successfully."))
 })
 
 const createPlaylist = AsyncHandler(async (req, res) => {
     const { name, description, profile } = req.body
 
-    const { userId } = req.user.id
+    const userId = req.user.id
 
     if (!(name && description)) {
         throw new ApiError(400, "Please provide all the required fields")
     }
 
+    const existedPlaylist = await db.playlist.findFirst({
+        where: {
+            name,
+            userId
+        }
+    })
+
+    if (existedPlaylist) {
+        throw new ApiError(409, "Playlist already exists.")
+    }
+
     const playlist = await db.playlist.create({
-        name, description, profile, userId
+        data: {
+            name,
+            description,
+            profile,
+            userId
+        }
     })
 
     const playlistCreated = await db.playlist.findUnique({
@@ -70,12 +89,10 @@ const createPlaylist = AsyncHandler(async (req, res) => {
     })
 
     return res.status(200).json(new ApiResponse(200, playlistCreated, "Playlist created sucessfully."))
-
 })
 
 const addProblemToPlaylist = AsyncHandler(async (req, res) => {
     const { playlistId } = req.params
-
     const { problems } = req.body
 
     if (!(Array.isArray(problems) && problems.length > 0)) {
@@ -114,7 +131,6 @@ const deletePlaylist = AsyncHandler(async (req, res) => {
 
 const removeProblemFromPlaylist = AsyncHandler(async (req, res) => {
     const { playlistId } = req.params
-
     const { problems } = req.body
 
     if (!(Array.isArray(problems) && problems.length > 0)) {
@@ -136,10 +152,6 @@ const removeProblemFromPlaylist = AsyncHandler(async (req, res) => {
 
 
 export {
-    getAllListDetails,
-    getPlayListDetails,
-    createPlaylist,
-    addProblemToPlaylist,
-    deletePlaylist,
-    removeProblemFromPlaylist
-}
+    addProblemToPlaylist, createPlaylist, deletePlaylist, getAllPlaylistDetails,
+    getPlayListDetails, removeProblemFromPlaylist
+};

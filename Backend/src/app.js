@@ -50,12 +50,11 @@ app.use("/api/v1/playlist", playlistRoutes);
 // 404 Handler
 app.use((req, _, next) => {
   try {
-    throw new Erorr (responseMessage.NOT_FOUND('route'))
+    throw new Error (responseMessage.NOT_FOUND('route'))
   } catch (error) {
     // httpError(next, error, req, 404)
     // next()
     console.log("err not found", error);
-    
   }
 })
 

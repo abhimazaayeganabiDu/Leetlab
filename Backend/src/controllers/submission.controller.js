@@ -1,6 +1,7 @@
 import { db } from "../libs/db.js";
 import { AsyncHandler } from "../utils/api-async-handler.js";
 import { ApiError } from "../utils/api-error-handle.js"
+import { ApiResponse } from "../utils/api-response.js"
 
 
 const getAllSubmission = AsyncHandler(async (req, res) => {
@@ -29,24 +30,33 @@ const getAllSubmission = AsyncHandler(async (req, res) => {
         throw new ApiError(404, "No submissions found")
     }
 
-    console.log("submissions for testing ", submissions);
-
-    return res.status(200).json({
-        success: true,
-        message: "All submissions fetched successfully",
-        data: submissions
-    })
+    return res.status(200).json(
+        new ApiResponse(200, submissions, "All submission fetched sucessfully.")
+    )
 
 })
 
 const getAllSubmissionByProblemId = AsyncHandler(async (req, res) => {
     const { problemId } = req.params
-
     const userId = req.user.id
+
+    const problem = await db.problem.findUnique({
+        where: {
+            id: problemId
+        },
+        select: {
+            id: true,
+            title: true
+        }
+    })
+
+    if (!problem) {
+        throw new ApiError(404, "Problem not found")
+    }
 
     const submission = await db.submission.findMany({
         where: {
-            id: problemId,
+            problemId,
             userId
         }
     })
@@ -111,12 +121,9 @@ const getSubmissionCountById = AsyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { count: submissionCount }, "Submission count fetched successfully"))
 })
 
-
-
 export {
     getAllSubmission,
     getAllSubmissionByProblemId,
     getSubmissionById,
     getSubmissionCountById
 }
-

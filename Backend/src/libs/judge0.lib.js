@@ -38,6 +38,7 @@ export const pollBatchResult = async (token) => {
 
     let data;
     let isAllDone = false;
+    let i = 1;
 
     while(!isAllDone) {
         data = await axios.get(`${url}/submissions/batch`, {
@@ -48,11 +49,9 @@ export const pollBatchResult = async (token) => {
         })
         
         const result = data.data.submissions
-
-
         isAllDone = result.every((result) => result.status.id >= 3)
-
-        await sleep(1000); 
+        
+        await sleep(1000*(i*=1.25)); 
     }
     
     return data.data.submissions;

@@ -563,6 +563,10 @@ const getMyProfile = AsyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, { ...req.user, totalProblem, solvedProblem }, "User fetched sucessfully."))
 })
 
+const check = AsyncHandler(async (req, res) => {
+    res.status(200).json(new ApiResponse(200, req.user, "User authenticated sucessfully."))
+})
+
 export {
     changePassword,
     changeUserDetail,
@@ -573,5 +577,6 @@ export {
     register,
     resendVarificationUrl,
     resetPassword,
-    verifyEmail
+    verifyEmail,
+    check
 }

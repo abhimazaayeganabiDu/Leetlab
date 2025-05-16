@@ -1,5 +1,5 @@
 import express from 'express'
-import { changePassword, changeUserDetail, forgotPasswordRequest, getMyProfile, login, logout, register, resendVarificationUrl, resetPassword, verifyEmail } from '../controllers/auth.controller.js';
+import { changePassword, changeUserDetail, check, forgotPasswordRequest, getMyProfile, login, logout, register, resendVarificationUrl, resetPassword, verifyEmail } from '../controllers/auth.controller.js';
 import { singleImage } from '../middleware/multer.middleware.js';
 import { checkLogin } from '../middleware/login.middleware.js';
 
@@ -20,6 +20,7 @@ app.post("/change-password", changePassword)
 app.post("/change-user-detail", singleImage, changeUserDetail)
 app.delete("/logout", logout)
 app.get("/get-my-profile", getMyProfile)
+app.get("/check", check)
 
 
 

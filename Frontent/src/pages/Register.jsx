@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+	Camera,
 	Code,
 	Eye,
 	EyeOff,
@@ -7,7 +8,8 @@ import {
 	Lock,
 	Mail,
 } from "lucide-react";
-import { useState } from "react";
+
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom';
 
@@ -17,16 +19,22 @@ import { useAuthStore } from "../store/useAuthStore";
 
 const SignUpSchema = z.object({
 	email: z.string().email("Enter a valid email"),
-	username: z.string().min(6, "Username must be atleast of 6 characters."),
-	password: z.string().min(6, "Password must be atleast of 8 characters."),
-	name: z.string().min(3, "Name must be atleast 3 character")
+	username: z.string().min(4, "Username must be atleast of 4 characters."),
+	password: z.string().min(8, "Password must be atleast of 8 characters."),
+	name: z.string().min(3, "Name must be atleast 3 character"),
+	avatar: z.any().refine((file) => file?.length === 1, {
+		message: "Image is required",
+	})
+		.refine((file) => file?.[0]?.type?.startsWith("image/"), {
+			message: "Must be an image",
+		})
 })
 
 const Register = () => {
 
 	const [showPassword, setShowPassword] = useState(false);
-
 	const { signup, isSigninUp } = useAuthStore()
+
 
 
 	const {
@@ -39,8 +47,9 @@ const Register = () => {
 
 	const onSubmit = async (data) => {
 		try {
-			// await signup(data)
-			console.log("signup data", data)
+			console.log("data", data);
+
+			await signup(data)
 		} catch (error) {
 			console.error("SignUp failed:", error);
 		}
@@ -65,6 +74,27 @@ const Register = () => {
 					{/* Form */}
 					<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
+						{/* {avatar} */}
+						<div className="relative w-32 h-32">
+							<div className="w-full h-full rounded-full bg-gray-300 flex items-center justify-center text-white text-3xl">
+								<span>👤</span>
+							</div>
+							<label
+								htmlFor="avatar"
+								className="absolute bottom-1 right-1 bg-gray-600 p-2 rounded-full cursor-pointer hover:bg-gray-700"
+							>
+								<input
+									type="file"
+									accept="image/*"
+									id="avatar"
+									{...register("avatar")}
+									className="hidden"
+								/>
+								<Camera />
+							</label>
+						</div>
+						{errors.avatar && <p className="text-red-500 text-sm">{errors.avatar.message}</p>}
+
 						{/* name */}
 						<div className="form-control">
 							<label className="label">
@@ -79,13 +109,36 @@ const Register = () => {
 									{...register("name")}
 									className={`input input-bordered w-full pl-10 ${errors.name ? "input-error" : ""
 										}`}
-									placeholder="John Doe"
+									placeholder="Enter your Full Name"
 								/>
 							</div>
 							{errors.name && (
 								<p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
 							)}
 						</div>
+
+						{/* Username */}
+						<div className="form-control">
+							<label className="label">
+								<span className="label-text font-medium">Username</span>
+							</label>
+							<div className="relative">
+								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+									<Mail className="h-5 w-5 text-base-content/40" />
+								</div>
+								<input
+									type="username"
+									{...register("username")}
+									className={`input input-bordered w-full pl-10 ${errors.username ? "input-error" : ""
+										}`}
+									placeholder="example_234"
+								/>
+							</div>
+							{errors.username && (
+								<p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+							)}
+						</div>
+
 
 						{/* Email */}
 						<div className="form-control">
@@ -110,27 +163,6 @@ const Register = () => {
 						</div>
 
 
-						{/* Username */}
-						<div className="form-control">
-							<label className="label">
-								<span className="label-text font-medium">Username</span>
-							</label>
-							<div className="relative">
-								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									<Mail className="h-5 w-5 text-base-content/40" />
-								</div>
-								<input
-									type="username"
-									{...register("username")}
-									className={`input input-bordered w-full pl-10 ${errors.username ? "input-error" : ""
-										}`}
-									placeholder="example_234"
-								/>
-							</div>
-							{errors.username && (
-								<p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
-							)}
-						</div>
 
 						{/* Password */}
 						<div className="form-control">
@@ -192,16 +224,16 @@ const Register = () => {
 						</p>
 					</div>
 				</div>
-			</div>
+			</div >
 
 			{/* Right Side - Image/Pattern */}
-			<AuthImagePattern
+			< AuthImagePattern
 				title={"Welcome to our platform!"}
 				subtitle={
 					"Sign up to access our platform and start using our services."
 				}
 			/>
-		</div>
+		</div >
 	)
 }
 

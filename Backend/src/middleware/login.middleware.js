@@ -4,7 +4,7 @@ import { AsyncHandler } from "../utils/api-async-handler.js";
 import jwt from 'jsonwebtoken'
 
 const checkLogin = AsyncHandler(async (req, res, next) => {
-    const token = req.cookies.ACCESS_TOKEN;
+    const token = req.cookies.ACCESS_TOKEN;    
 
     if(!token) {
         throw new ApiError(401, "Token expired, Please Login again.")

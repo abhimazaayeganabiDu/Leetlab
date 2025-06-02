@@ -109,7 +109,7 @@ const register = AsyncHandler(async (req, res) => {
         throw new ApiError(404, "Some internal error, User not created.")
     }
 
-    const varificationUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/verify-email/${unHashedToken}`
+    const varificationUrl = `${process.env.CLIENT_URL}/verify-email/${unHashedToken}`
     const mailgenContent = emailVerificationMailgenContent(username, varificationUrl);
 
     sendEmail({
@@ -196,7 +196,7 @@ const resendVarificationUrl = AsyncHandler(async (req, res) => {
     })
 
 
-    const varificationUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/verify-email/${unHashedToken}`
+    const varificationUrl = `${process.env.CLIENT_URL}/verify-email/${unHashedToken}`
     const mailgenContent = emailVerificationMailgenContent(existingUser.username, varificationUrl);
 
     await sendEmail({
@@ -564,6 +564,9 @@ const getMyProfile = AsyncHandler(async (req, res) => {
 })
 
 const check = AsyncHandler(async (req, res) => {
+    if(!req.user) {
+        throw new ApiError(401, "Please login to get profile")
+    }
     res.status(200).json(new ApiResponse(200, req.user, "User authenticated sucessfully."))
 })
 

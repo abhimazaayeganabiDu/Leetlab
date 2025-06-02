@@ -12,15 +12,15 @@ import responseMessage from './constant/responseMessage.js'
 const app = express();
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-
 app.use(helmet())
 app.use(
   cors({
     methods:['GET', "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
-    origin: [config.CLIENT_URL],
+    origin: [process.env.CLIENT_URL],
     credentials: true
   })
 )
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

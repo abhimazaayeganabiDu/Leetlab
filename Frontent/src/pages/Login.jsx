@@ -1,7 +1,4 @@
-import React, { useState } from 'react'
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Link } from 'react-router-dom'
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	Code,
 	Eye,
@@ -10,6 +7,9 @@ import {
 	Lock,
 	Mail,
 } from "lucide-react";
+import { useState } from 'react';
+import { useForm } from "react-hook-form";
+import { Link } from 'react-router-dom';
 
 import { z } from "zod";
 import AuthImagePattern from '../components/AuthImagePattern';
@@ -122,27 +122,35 @@ const Login = () => {
 						</div>
 
 						{/* Submit Button */}
-						<button
-							type="submit"
-							className="btn btn-primary w-full"
-							disabled={isLoggingIn}
-						>
-							{isLoggingIn ? (
-								<>
-									<Loader2 className="h-5 w-5 animate-spin" />
-									Loading...
-								</>
-							) : (
-								"Sign in"
-							)}
-						</button>
+						<div className='space-y-1.5'>
+
+							<button
+								type="submit"
+								className="btn btn-primary w-full"
+								disabled={isLoggingIn}
+							>
+								{isLoggingIn ? (
+									<>
+										<Loader2 className="h-5 w-5 animate-spin" />
+										Loading...
+									</>
+								) : (
+									"Sign in"
+								)}
+							</button >
+							<div className='flex justify-end'>
+								<Link to="/forgot-password" className="link link-primary no-underline">
+									Forgot password?
+								</Link>
+							</div>
+						</div>
 					</form>
 
 					{/* Footer */}
 					<div className="text-center">
 						<p className="text-base-content/60">
 							Don't have an account?{" "}
-							<Link to="/register" className="link link-primary">
+							<Link to="/register" className="link link-primary no-underline">
 								Sign up
 							</Link>
 						</p>

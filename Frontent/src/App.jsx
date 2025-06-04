@@ -11,6 +11,8 @@ import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import VerifyEmail from "./pages/VerifyEmail";
+import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
 
 
 const App = () => {
@@ -35,6 +37,8 @@ const App = () => {
 			<Toaster />
 			<Routes>
 
+				<Route path="/forgot-password" element={<ForgotPassword/>}/>
+
 				<Route path="/verify-email/:id" element={<VerifyEmail/>}/>
 
 				<Route path="/" element={authUser ? <Layout /> : <Navigate to={"/login"} />}>
@@ -50,6 +54,8 @@ const App = () => {
 				<Route element={<AdminRoute />}>
 					<Route path="/add-problem" element={authUser ? <AddProblem /> : <Navigate to={"/"} />} />
 				</Route>
+
+				<Route path="/profile" element={authUser? <Profile /> : <Navigate to={"/login"}/>} />
 
 			</Routes>
 		</div>

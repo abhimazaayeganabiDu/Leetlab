@@ -1,18 +1,19 @@
+import { toast } from 'react-hot-toast'
 import { create } from 'zustand'
 import { axiosInstance } from '../lib/axios'
-import { ErrorIcon, toast } from 'react-hot-toast'
-import axios from 'axios'
 
 export const useAuthStore = create((set) => ({
     authUser: null,
     isSinginUp: false,
     isLoginUp: false,
     isCheckingAuth: false,
+    userProfile: null,
+    isPasswordForgoting: false,
 
     checkAuth: async () => {
         set({ isCheckingAuth: true })
         try {
-            const {data} = await axiosInstance.get("/auth/check")            
+            const { data } = await axiosInstance.get("/auth/check")
             set({ authUser: data })
         } catch (error) {
             console.log("Error checking auth", error);
@@ -72,12 +73,15 @@ export const useAuthStore = create((set) => ({
     },
 
     forgotPassword: async (data) => {
+        isPasswordForgoting: true
         try {
             const res = await axiosInstance.post("/auth/reset-password-request", data)
-            toast.success(res.message)
+            toast.success(res.data.message)
         } catch (error) {
             console.log("Error forgotPassword", error);
             toast.error("Error in forgotPassword")
+        } finally {
+            isPasswordForgoting: false
         }
     },
 
@@ -115,8 +119,15 @@ export const useAuthStore = create((set) => ({
     },
 
 
-    getProfile: async (userData) => {
-
+    getProfile: async () => {
+        try {
+            const { data } = await axiosInstance.get("auth/get-my-profile")
+            set({ userProfile: data })
+            toast.success("Profile Fetched Sucessfully.")
+        } catch (error) {
+            console.log("Error while fetch user profile", error);
+            toast.error("Error getting Profile.")
+        }
     }
 
 }))

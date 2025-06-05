@@ -86,10 +86,16 @@ export const useAuthStore = create((set) => ({
     },
 
     resetForgotPassword: async (data, token) => {
+        isPasswordForgoting: true
         try {
-            const res = await axiosInstance.post(`/reset-password/${token}`, data)
+            
+            const res = await axiosInstance.post(`/auth/reset-password/${token}`, data)
+            toast.success(res.data.message)
         } catch (error) {
             console.log("Error in reset Password.");
+            toast.error("Error in reset Password")
+        } finally {
+            isPasswordForgoting: false
         }
     },
 

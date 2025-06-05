@@ -13,6 +13,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import VerifyEmail from "./pages/VerifyEmail";
 import Profile from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 
 const App = () => {
@@ -38,6 +39,7 @@ const App = () => {
 			<Routes>
 
 				<Route path="/forgot-password" element={<ForgotPassword/>}/>
+				<Route path="/reset-password/:token" element={<ResetPassword/>}/>
 
 				<Route path="/verify-email/:id" element={<VerifyEmail/>}/>
 

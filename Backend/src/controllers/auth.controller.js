@@ -228,7 +228,7 @@ const login = AsyncHandler(async (req, res) => {
         throw new ApiError(401, "User not found with this email.")
     }
 
-    if(!user.isVarified) {
+    if (!user.isVarified) {
         throw new ApiError(401, "Please verify account then login Again.")
     }
 
@@ -292,7 +292,7 @@ const forgotPasswordRequest = AsyncHandler(async (req, res) => {
 
     const { hashedToken, unHashedToken, tokenExpiry } = generateTemporaryToken()
 
-    const passwordResetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/reset-password/${unHashedToken}`
+    const passwordResetUrl = `${process.env.CLIENT_URL}/reset-password/${unHashedToken}`
     const mailgenContent = await forgotPasswordMailgenContent(user.username, passwordResetUrl);
     const forgotPasswordTokenExpiry = new Date(tokenExpiry);
 
@@ -351,7 +351,9 @@ const resetPassword = AsyncHandler(async (req, res) => {
             id: user.id
         },
         data: {
-            password: hashedPassword
+            password: hashedPassword,
+            forgotPasswordToken:"",
+            forgotPasswordTokenExpiry:null
         }
     })
 
@@ -564,7 +566,7 @@ const getMyProfile = AsyncHandler(async (req, res) => {
 })
 
 const check = AsyncHandler(async (req, res) => {
-    if(!req.user) {
+    if (!req.user) {
         throw new ApiError(401, "Please login to get profile")
     }
     res.status(200).json(new ApiResponse(200, req.user, "User authenticated sucessfully."))

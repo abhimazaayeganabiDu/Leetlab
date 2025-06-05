@@ -23,8 +23,6 @@ const ForgotPassword = () => {
 
     const onSubmit = async (data) => {
         try {
-            console.log("data from forgot password", data);
-
             await forgotPassword(data)
         } catch (error) {
             console.log("Forgot Password failed", error);
@@ -83,7 +81,7 @@ const ForgotPassword = () => {
                                     Loading...
                                 </>
                             ) : (
-                                "Reset Password"
+                                "Reset my Password"
                             )}
                         </button >
                     </div>

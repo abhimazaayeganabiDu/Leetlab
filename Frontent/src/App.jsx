@@ -38,18 +38,19 @@ const App = () => {
 			<Toaster />
 			<Routes>
 
-				<Route path="/forgot-password" element={<ForgotPassword/>}/>
-				<Route path="/reset-password/:token" element={<ResetPassword/>}/>
+				<Route path='/login' element={!authUser ? <Login /> : <Navigate to={"/"} />} />
+				<Route path="/register" element={!authUser ? <Register /> : <Navigate to={"/"} />} />
+				<Route path="/forgot-password" element={<ForgotPassword />} />
+				<Route path="/reset-password/:token" element={<ResetPassword />} />
 
-				<Route path="/verify-email/:id" element={<VerifyEmail/>}/>
+				<Route path="/verify-email/:id" element={<VerifyEmail />} />
 
-				<Route path="/" element={authUser ? <Layout /> : <Navigate to={"/login"} />}>
+				<Route
+					path="/"
+					element={authUser ? <Layout /> : <Navigate to="/login" />}
+				>
 					<Route index element={<Home />} />
 				</Route>
-
-				<Route path='/login' element={!authUser ? <Login /> : <Navigate to={"/"} />} />
-
-				<Route path="/register" element={!authUser ? <Register /> : <Navigate to={"/"} />} />
 
 				<Route path="/problem/:id" element={authUser ? <ProblemPage /> : <Navigate to={"/login"} />} />
 
@@ -57,7 +58,7 @@ const App = () => {
 					<Route path="/add-problem" element={authUser ? <AddProblem /> : <Navigate to={"/"} />} />
 				</Route>
 
-				<Route path="/profile" element={authUser? <Profile /> : <Navigate to={"/login"}/>} />
+				<Route path="/profile" element={authUser ? <Profile /> : <Navigate to={"/login"} />} />
 
 			</Routes>
 		</div>

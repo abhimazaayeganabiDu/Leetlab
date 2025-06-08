@@ -1,5 +1,5 @@
 import { Code, LogOut, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import LogoutButton from "./LogoutButton";
 
@@ -8,6 +8,7 @@ import LogoutButton from "./LogoutButton";
 const Navbar = () => {
 
     const { authUser } = useAuthStore()
+
 
     return (
         <nav className="sticky top-0 z-50 w-full py-5">
@@ -23,6 +24,7 @@ const Navbar = () => {
                 {/* User Profile and Dropdown */}
                 <div className="flex items-center gap-8">
                     <div className="dropdown dropdown-end">
+
                         <label tabIndex={0} className="btn btn-ghost btn-circle avatar flex flex-row ">
                             <div className="w-10 rounded-full ">
                                 <img
@@ -47,7 +49,7 @@ const Navbar = () => {
                             <li>
                                 <p className="text-base font-semibold">
 
-                                    {authUser?.name}
+                                    {authUser?.data.name}
 
                                 </p>
                                 <hr className="border-gray-200/10" />
@@ -61,7 +63,7 @@ const Navbar = () => {
                                     My Profile
                                 </Link>
                             </li>
-                            {authUser?.role === "ADMIN" && (
+                            {authUser?.data.role === "ADMIN" && (
                                 <li>
                                     <Link
                                         to="/add-problem"
@@ -82,6 +84,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
+            <Outlet />
         </nav>
     )
 }
